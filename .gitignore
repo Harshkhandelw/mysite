@@ -1,0 +1,29 @@
+# dependencies
+node_modules/
+
+# environment variables
+.env
+.env.local
+.env.production
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+
+
+# uploads (Render does not persist files)
+uploads/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# editor settings
+.vscode/
+.idea/
+
+# cache
+.cache/
