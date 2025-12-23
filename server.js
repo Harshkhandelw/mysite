@@ -4,7 +4,7 @@ const cors = require("cors");
 const fs = require("fs");
 const path = require("path");
 
-// Load environment variables (local only)
+// Load env
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
 }
@@ -30,13 +30,20 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/uploads", express.static("uploads"));
 
 /* =========================
-   Routes
+   API ROUTES (MUST BE FIRST)
 ========================= */
-app.get("/", (req, res) => {
-  res.send("API is running 🚀");
-});
-
 app.use("/api/products", productRoutes);
+
+/* =========================
+   Serve Frontend (Vite build)
+========================= */
+const distPath = path.join(__dirname, "dist");
+app.use(express.static(distPath));
+
+// React Router fallback — EXCLUDE /api
+app.get(/^\/(?!api).*/, (req, res) => {
+  res.sendFile(path.join(distPath, "index.html"));
+});
 
 /* =========================
    MongoDB Connection
