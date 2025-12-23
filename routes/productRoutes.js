@@ -1,17 +1,27 @@
 const express = require("express");
-const upload = require("../middleware/upload");
-const {
-  createProduct,
-  getProducts,
-  updateProduct,
-  deleteProduct
-} = require("../controllers/productController");
-
 const router = express.Router();
+const upload = require("../middleware/upload");
+const Product = require("../models/Product");
 
-router.post("/", upload.array("images", 5), createProduct);
-router.get("/", getProducts);
-router.put("/:id", upload.array("images", 5), updateProduct);
-router.delete("/:id", deleteProduct);
+router.post("/", upload.single("image"), async (req, res) => {
+  try {
+    const product = new Product({
+      name: req.body.name,
+      type: req.body.type,
+      stock: req.body.stock,
+      mrp: req.body.mrp,
+      sellingPrice: req.body.sellingPrice,
+      brand: req.body.brand,
+      returnEligible: req.body.returnEligible,
+      image: req.file ? req.file.path : null
+    });
+
+    await product.save();
+    res.status(201).json(product);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Upload failed" });
+  }
+});
 
 module.exports = router;
